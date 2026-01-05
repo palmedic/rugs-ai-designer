@@ -29,9 +29,19 @@ export default function DesignStudio({ selectedRug, onBack }: DesignStudioProps)
     setIsGenerating(true);
     setError(null);
 
-    addTrace('info', 'מתחיל יצירת עיצוב חדש', { prompt, baseRug: selectedRug.name });
+    // Use last iteration as base, or original rug if no iterations
+    const baseImageUrl = iterations.length > 0
+      ? iterations[iterations.length - 1].imageUrl
+      : selectedRug.imageUrl;
+
+    addTrace('info', 'מתחיל יצירת עיצוב חדש', {
+      prompt,
+      baseRug: selectedRug.name,
+      usingIteration: iterations.length > 0 ? iterations.length : 'original'
+    });
     addTrace('request', 'שולח בקשה ל-API', {
       baseRugId: selectedRug.id,
+      baseImage: iterations.length > 0 ? `iteration ${iterations.length}` : 'original',
       prompt: prompt
     });
 
@@ -41,7 +51,7 @@ export default function DesignStudio({ selectedRug, onBack }: DesignStudioProps)
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           baseRugId: selectedRug.id,
-          baseRugImageUrl: selectedRug.imageUrl,
+          baseRugImageUrl: baseImageUrl,
           prompt: prompt,
           previousIterations: iterations
         })
@@ -112,6 +122,31 @@ export default function DesignStudio({ selectedRug, onBack }: DesignStudioProps)
     );
     window.open(`mailto:?subject=${subject}&body=${body}`);
     addTrace('info', 'נפתח חלון שיתוף במייל');
+  };
+
+  // Delete an iteration and update current image to previous iteration or original
+  const deleteIteration = (iterationId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent selecting the iteration when clicking delete
+
+    const iterationIndex = iterations.findIndex(i => i.id === iterationId);
+    const deletedIteration = iterations[iterationIndex];
+
+    // Remove the iteration
+    const newIterations = iterations.filter(i => i.id !== iterationId);
+    setIterations(newIterations);
+
+    // If we deleted the currently displayed image, show the previous one or original
+    if (currentImage === deletedIteration?.imageUrl) {
+      if (newIterations.length > 0) {
+        // Show the last remaining iteration
+        setCurrentImage(newIterations[newIterations.length - 1].imageUrl);
+      } else {
+        // No iterations left, show original rug
+        setCurrentImage(null);
+      }
+    }
+
+    addTrace('info', 'איטרציה נמחקה', { iterationId, remainingIterations: newIterations.length });
   };
 
   const hasGeneratedImage = !!currentImage;
@@ -232,10 +267,10 @@ export default function DesignStudio({ selectedRug, onBack }: DesignStudioProps)
               <h3 className="text-lg font-medium mb-4">היסטוריית עיצובים</h3>
               <div className="space-y-3 max-h-64 overflow-y-auto">
                 {iterations.map((iteration, index) => (
-                  <button
+                  <div
                     key={iteration.id}
                     onClick={() => setCurrentImage(iteration.imageUrl)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer ${
                       currentImage === iteration.imageUrl
                         ? 'border-black bg-gray-50'
                         : 'border-[var(--border)] hover:border-[var(--accent)]'
@@ -254,7 +289,16 @@ export default function DesignStudio({ selectedRug, onBack }: DesignStudioProps)
                       <p className="text-sm font-medium truncate">איטרציה {index + 1}</p>
                       <p className="text-xs text-[var(--muted)] truncate">{iteration.prompt}</p>
                     </div>
-                  </button>
+                    <button
+                      onClick={(e) => deleteIteration(iteration.id, e)}
+                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                      title="מחק איטרציה"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
