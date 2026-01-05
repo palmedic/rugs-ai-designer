@@ -61,12 +61,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Build enhanced prompt for rug design
+    // Build enhanced prompt for rug design - preserve original design, only add user's modifications
     const enhancedPrompt = baseRugImageUrl
-      ? `Based on this luxury rug design, create a modified version with the following changes: ${prompt}.
-Keep the same general rug shape and professional product photography style with top-down view.
-Maintain the high-quality handwoven textile texture appearance.
-The result should look like a real luxury rug product photo.`
+      ? `IMPORTANT: Keep this exact rug design as the base - preserve the original pattern, colors, shape, and overall composition.
+Only apply these specific additions/modifications to the existing design: ${prompt}.
+Do NOT create a new design from scratch. The original rug must remain recognizable.
+Maintain the exact same rug shape, size, and professional product photography style with top-down view.
+Keep the high-quality handwoven textile texture and luxury appearance.
+The result should look like the same rug with subtle enhancements based on the user's request.`
       : `Create a high quality luxury handwoven rug design with a top-down view.
 The design should feature: ${prompt}.
 Style: Professional product photography, neutral background, detailed textile texture,
