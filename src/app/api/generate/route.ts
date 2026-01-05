@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BANANA_API_URL = 'https://api.banandev.com/v1/images/generations';
+// Google Gemini API (Nano Banana Pro is the codename for Gemini image generation)
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,10 +15,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.BANANA_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-      console.error('BANANA_API_KEY not configured');
+      console.error('GEMINI_API_KEY not configured');
       return NextResponse.json(
         { success: false, error: 'שירות יצירת התמונות אינו מוגדר כראוי' },
         { status: 500 }
@@ -25,34 +26,38 @@ export async function POST(request: NextRequest) {
     }
 
     // Build enhanced prompt for rug design
-    const enhancedPrompt = `High quality luxury handwoven rug design, top-down view, ${prompt}.
-    Professional product photography, neutral background, detailed textile texture,
-    inspired by contemporary art and traditional craftsmanship, Rugs & Co style.`;
+    const enhancedPrompt = `Create a high quality luxury handwoven rug design with a top-down view.
+The design should feature: ${prompt}.
+Style: Professional product photography, neutral background, detailed textile texture,
+inspired by contemporary art and traditional craftsmanship, luxury rug aesthetic.
+The rug should look realistic with visible weave texture and high-end materials.`;
 
-    console.log('Generating image with Banana Nano Pro:', {
+    console.log('Generating image with Gemini:', {
       baseRugId,
       originalPrompt: prompt,
       enhancedPrompt
     });
 
-    const response = await fetch(BANANA_API_URL, {
+    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'nano',
-        prompt: enhancedPrompt,
-        num_images: 1,
-        size: '1024x1024',
-        response_format: 'url'
+        contents: [{
+          parts: [{
+            text: enhancedPrompt
+          }]
+        }],
+        generationConfig: {
+          responseModalities: ["TEXT", "IMAGE"]
+        }
       })
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('Banana API error:', response.status, errorData);
+      console.error('Gemini API error:', response.status, errorData);
       return NextResponse.json(
         { success: false, error: 'שגיאה ביצירת התמונה. נסו שוב.' },
         { status: response.status }
@@ -60,12 +65,22 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
+    console.log('Gemini response:', JSON.stringify(data, null, 2));
 
-    // Extract image URL from response
-    const imageUrl = data.data?.[0]?.url || data.images?.[0]?.url || data.url;
+    // Extract image from Gemini response
+    let imageData: string | null = null;
 
-    if (!imageUrl) {
-      console.error('No image URL in response:', data);
+    if (data.candidates && data.candidates[0]?.content?.parts) {
+      for (const part of data.candidates[0].content.parts) {
+        if (part.inlineData?.mimeType?.startsWith('image/')) {
+          imageData = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+          break;
+        }
+      }
+    }
+
+    if (!imageData) {
+      console.error('No image in response:', data);
       return NextResponse.json(
         { success: false, error: 'לא התקבלה תמונה מהשרת' },
         { status: 500 }
@@ -74,7 +89,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      imageUrl
+      imageUrl: imageData
     });
 
   } catch (error) {

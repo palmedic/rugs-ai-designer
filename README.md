@@ -6,7 +6,7 @@ AI-powered custom rug design tool for [Rugs & Co](https://rugsandco.com).
 
 - **Hebrew RTL Interface** - Full Hebrew language support with right-to-left layout
 - **Rug Catalog** - Browse rugs from Timeless, Avantgarde, and Urban collections
-- **AI Image Generation** - Generate custom rug designs using Banana Nano Pro
+- **AI Image Generation** - Generate custom rug designs using Google Gemini (Nano Banana Pro)
 - **Iterative Design** - Refine your design with multiple iterations
 - **Share & Download** - Share via email or download generated designs
 - **Debug Trace Panel** - View API calls and application logs
@@ -18,7 +18,7 @@ AI-powered custom rug design tool for [Rugs & Co](https://rugsandco.com).
 
 - Node.js 18+
 - npm or yarn
-- Banana API key for image generation
+- Google Gemini API key for image generation
 
 ### Installation
 
@@ -38,10 +38,12 @@ npm install
 cp .env.local.example .env.local
 ```
 
-4. Add your Banana API key to `.env.local`:
+4. Add your Gemini API key to `.env.local`:
 ```
-BANANA_API_KEY=your_api_key_here
+GEMINI_API_KEY=your_api_key_here
 ```
+
+Get your API key from [Google AI Studio](https://aistudio.google.com/apikey)
 
 5. Run the development server:
 ```bash
@@ -56,7 +58,7 @@ npm run dev
 
 1. Push to GitHub
 2. Import project in Vercel
-3. Add `BANANA_API_KEY` environment variable
+3. Add `GEMINI_API_KEY` environment variable
 4. Deploy
 
 ## Tech Stack
@@ -64,7 +66,7 @@ npm run dev
 - **Framework**: Next.js 16 with App Router
 - **Styling**: Tailwind CSS
 - **Language**: TypeScript
-- **AI**: Banana Nano Pro for image generation
+- **AI**: Google Gemini Image Generation (Nano Banana Pro)
 - **Fonts**: Varela Round, PT Sans, Work Sans (matching Rugs & Co branding)
 
 ## Credits
