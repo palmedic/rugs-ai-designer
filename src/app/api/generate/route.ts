@@ -66,9 +66,16 @@ export async function POST(request: NextRequest) {
       ? `IMPORTANT: Keep this exact rug design as the base - preserve the original pattern, colors, shape, and overall composition.
 Only apply these specific additions/modifications to the existing design: ${prompt}.
 Do NOT create a new design from scratch. The original rug must remain recognizable.
+
+CRITICAL - Preserve the rug's material nature:
+- Keep the exact same handwoven textile texture (wool, silk, or blend as shown)
+- Maintain the visible weave pattern, knot density, and fiber characteristics
+- Preserve the natural material sheen and how light interacts with the fibers
+- Keep the same pile height and texture depth visible in the original
+- The rug must look like a real handcrafted textile, not a printed or digital image
+
 Maintain the exact same rug shape, size, and professional product photography style with top-down view.
-Keep the high-quality handwoven textile texture and luxury appearance.
-The result should look like the same rug with subtle enhancements based on the user's request.`
+The result should look like the same physical rug with subtle design enhancements based on the user's request.`
       : `Create a high quality luxury handwoven rug design with a top-down view.
 The design should feature: ${prompt}.
 Style: Professional product photography, neutral background, detailed textile texture,
