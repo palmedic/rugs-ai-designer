@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rugs & Co - AI Rug Designer
+
+AI-powered custom rug design tool for [Rugs & Co](https://rugsandco.com).
+
+## Features
+
+- **Hebrew RTL Interface** - Full Hebrew language support with right-to-left layout
+- **Rug Catalog** - Browse rugs from Timeless, Avantgarde, and Urban collections
+- **AI Image Generation** - Generate custom rug designs using Banana Nano Pro
+- **Iterative Design** - Refine your design with multiple iterations
+- **Share & Download** - Share via email or download generated designs
+- **Debug Trace Panel** - View API calls and application logs
+- **Mobile Responsive** - Works on all device sizes
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+
+- npm or yarn
+- Banana API key for image generation
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/palmedic/rugs-ai-designer.git
+cd rugs-ai-designer
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Create environment file:
+```bash
+cp .env.local.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Add your Banana API key to `.env.local`:
+```
+BANANA_API_KEY=your_api_key_here
+```
 
-## Learn More
+5. Run the development server:
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+6. Open [http://localhost:3000](http://localhost:3000)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Vercel (Recommended)
 
-## Deploy on Vercel
+1. Push to GitHub
+2. Import project in Vercel
+3. Add `BANANA_API_KEY` environment variable
+4. Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework**: Next.js 16 with App Router
+- **Styling**: Tailwind CSS
+- **Language**: TypeScript
+- **AI**: Banana Nano Pro for image generation
+- **Fonts**: Varela Round, PT Sans, Work Sans (matching Rugs & Co branding)
+
+## Credits
+
+Developed by Guy Shalev - La Casa Libre
+Email: palmedic@gmail.com
+
+© 2025 Rugs & Co. All rights reserved.
