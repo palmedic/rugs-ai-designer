@@ -4,73 +4,11 @@ import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { Rug, DesignIteration } from '@/types';
 import { useTrace } from '@/context/TraceContext';
-import { getRugPattern, PatternType } from '@/lib/rugs-data';
 import LoadingAnimation from './LoadingAnimation';
 
 interface DesignStudioProps {
   selectedRug: Rug;
   onBack: () => void;
-}
-
-function RugPatternLarge({ pattern, name }: { pattern: PatternType; name: string }) {
-  const getPatternSVG = () => {
-    switch (pattern) {
-      case 'circles':
-        return (
-          <>
-            <circle cx="200" cy="200" r="150" fill="none" stroke="#8B7355" strokeWidth="3" />
-            <circle cx="200" cy="200" r="100" fill="none" stroke="#8B7355" strokeWidth="2" />
-            <circle cx="200" cy="200" r="50" fill="none" stroke="#8B7355" strokeWidth="1.5" />
-          </>
-        );
-      case 'waves':
-        return (
-          <>
-            <path d="M0 120 Q100 80 200 120 T400 120" fill="none" stroke="#8B7355" strokeWidth="3" />
-            <path d="M0 200 Q100 160 200 200 T400 200" fill="none" stroke="#8B7355" strokeWidth="3" />
-            <path d="M0 280 Q100 240 200 280 T400 280" fill="none" stroke="#8B7355" strokeWidth="3" />
-          </>
-        );
-      case 'geometric':
-        return (
-          <>
-            <rect x="80" y="80" width="240" height="240" fill="none" stroke="#8B7355" strokeWidth="3" />
-            <rect x="130" y="130" width="140" height="140" fill="none" stroke="#8B7355" strokeWidth="2" />
-            <line x1="80" y1="80" x2="320" y2="320" stroke="#8B7355" strokeWidth="1.5" />
-            <line x1="320" y1="80" x2="80" y2="320" stroke="#8B7355" strokeWidth="1.5" />
-          </>
-        );
-      case 'organic':
-        return (
-          <>
-            <ellipse cx="140" cy="180" rx="90" ry="70" fill="none" stroke="#8B7355" strokeWidth="3" />
-            <ellipse cx="260" cy="220" rx="90" ry="70" fill="none" stroke="#8B7355" strokeWidth="3" />
-            <circle cx="200" cy="120" r="40" fill="none" stroke="#8B7355" strokeWidth="2" />
-          </>
-        );
-      case 'lines':
-        return (
-          <>
-            <line x1="40" y1="100" x2="360" y2="100" stroke="#8B7355" strokeWidth="3" />
-            <line x1="40" y1="160" x2="360" y2="160" stroke="#8B7355" strokeWidth="2" />
-            <line x1="40" y1="220" x2="360" y2="220" stroke="#8B7355" strokeWidth="3" />
-            <line x1="40" y1="280" x2="360" y2="280" stroke="#8B7355" strokeWidth="2" />
-          </>
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" className="w-full h-full">
-      <rect fill="#D4C4B0" width="400" height="400" />
-      {getPatternSVG()}
-      <text x="200" y="380" textAnchor="middle" fontFamily="Arial" fontSize="14" fill="#6B6B6B">
-        {name}
-      </text>
-    </svg>
-  );
 }
 
 export default function DesignStudio({ selectedRug, onBack }: DesignStudioProps) {
@@ -208,7 +146,13 @@ export default function DesignStudio({ selectedRug, onBack }: DesignStudioProps)
                   unoptimized
                 />
               ) : (
-                <RugPatternLarge pattern={getRugPattern(selectedRug.id)} name={selectedRug.name} />
+                <Image
+                  src={selectedRug.imageUrl}
+                  alt={selectedRug.nameHe}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
               )}
             </div>
 
