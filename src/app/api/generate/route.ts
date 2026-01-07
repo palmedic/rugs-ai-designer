@@ -1,5 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// TEMPORARILY DISABLED - Payment issue
+// All AI generation is disabled until payment is resolved
+
+export async function POST(request: NextRequest) {
+  // Return maintenance message - no API calls will be made
+  return NextResponse.json(
+    { success: false, error: 'שירות יצירת התמונות מושבת זמנית לצורך תחזוקה' },
+    { status: 503 }
+  );
+}
+
+/*
+// ============================================
+// ORIGINAL CODE - UNCOMMENT TO RE-ENABLE
+// ============================================
+
 // Google Gemini API for image generation
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent';
 
@@ -151,3 +167,4 @@ The rug should look realistic with visible weave texture and high-end materials.
     );
   }
 }
+*/
